@@ -11,7 +11,8 @@
                 packagePath: "./plugins/server-base",
                 port: 3000,
                 maxPriority: 100,
-                clientPath: process.env.PWD+path.sep+"client"/*+path.sep+"source"*/
+                clientPath: process.env.PWD+path.sep+"build"+path.sep+"client"/*+path.sep+"source"*/,
+                clientUrlPath: '/'
             },
             "./plugins/parser-definer"
         ]

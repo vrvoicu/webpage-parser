@@ -16,13 +16,14 @@
         var port = options.port;
         var maxPriority = options.maxPriority;
         var clientPath = options.clientPath;
+        var clientUrlPath = options.clientUrlPath;
 
         var app = express();
         var webserver = http.createServer(app);
 
         webserver.listen(port);
 
-        app.use ('/public', express.static(clientPath));
+        app.use (clientUrlPath, express.static(clientPath));
 
         var routesInfos = [];
         var routers = {};

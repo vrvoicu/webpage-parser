@@ -26,6 +26,33 @@ module.exports = function(grunt) {
             }
         },*/
 
+        clean: {
+            buid: ['build']
+        },
+
+        copy: {
+            server: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: "server/",
+                        src: '**',
+                        dest: "build/server"
+                    }
+                ]
+            },
+            client: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'client/',
+                        src: '**',
+                        dest: 'build/client'
+                    }
+                ]
+            }
+        },
+
         jshint: {
             server:{
                 src: "server/**/*.js"
@@ -34,9 +61,10 @@ module.exports = function(grunt) {
                 src: "client/**/*.js"
             }
         },
-        typescript: {
+
+        /*typescript: {
             base: {
-                src: ['client/plugins/**/*.ts'],
+                src: ['client/plugins/!**!/!*.ts'],
                 dest: 'client/js/a.js',
                 options: {
                     module: 'system', //or commonjs
@@ -45,37 +73,12 @@ module.exports = function(grunt) {
                     declaration: true
                 }
             }
-        },
-
-        /*injector: {
-            options: {},
-            js: {
-                options: {
-                    transform: function (filePath) {
-                        filePath = filePath.replace('public/', '');
-                        filePath = filePath.replace('/tmp/', '');
-
-                        return '<script src="' + filePath + '"></script>';
-                    },
-                    starttag: '<!-- injector:js -->',
-                    endtag: '<!-- endinjector -->',
-                },
-                files: {
-                    'tmp/public/index.html': [
-                        [
-
-                            //'tmp/public/source/!**!/!*.js',
-                            'public/plugins/!**!/!*js'
-                            // 'public/source/plugins/wyliodrin.menubar/!*.js'
-                        ]
-                    ]
-                }
-            },*/
+        },*/
 
         wiredep: {
             client: {
-                cwd: 'client',
-                src: 'client/index.html',
+                cwd: 'build/client',
+                src: 'build/client/index.html',
                 ignorePath: '',
                 exclude: []
             }
@@ -86,7 +89,7 @@ module.exports = function(grunt) {
             js:{
                 options: {
                     transform: function (filePath) {
-                        filePath = filePath.replace('client/', 'public/');
+                        filePath = filePath.replace('/build/client/', '');
                         //filePath = filePath.replace('/tmp/', '');
 
                         return '<script src="' + filePath + '"></script>';
@@ -95,12 +98,31 @@ module.exports = function(grunt) {
                     endtag: '<!-- endinjector -->'
                 },
                 files: {
-                    'client/index.html': [
+                    'build/client/index.html': [
                         [
+                            'build/client/jspm_packages/system.js',
+                            'build/client/config.js',
+                            //'build/client/plugins/**/*.js'
+                        ]
+                    ]
+                }
+            },
+            systemImport: {
+                options: {
+                    transform: function (filePath) {
+                        filePath = filePath.replace('/build/client/', '');
 
-                            //'tmp/public/source/**/*.js',
-                            'client/plugins/**/*.js'
-                            // 'public/source/plugins/wyliodrin.menubar/!*.js'
+                        return '"'+filePath+'"';
+                    },
+                    starttag: '<!-- injector:systemImport -->',
+                    endtag: '<!-- endinjector -->'
+                },
+                files: {
+                    'build/client/index.html': [
+                        [
+                            'build/client/jspm_packages/system.js',
+                            'build/client/config.js',
+                            'build/client/plugins/**/*.js'
                         ]
                     ]
                 }
@@ -113,10 +135,12 @@ module.exports = function(grunt) {
         },
     });
 
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     // Load the plugin that provides the "uglify" task.
     //grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-typescript');
+    /*grunt.loadNpmTasks('grunt-typescript');*/
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-injector');
     //this is used to wire bower dependencies
@@ -127,6 +151,6 @@ module.exports = function(grunt) {
     //grunt.registerTask('default', ['uglify']);
     grunt.registerTask('server', ['jshint:server', /*'typescript'*/]);
     grunt.registerTask('client', ['jshint:client']);
-    grunt.registerTask('global', [/*'typescript',*/ 'wiredep'/*, 'injector*/'/*, 'watch'*/]);
+    grunt.registerTask('global', ['clean', 'copy', 'injector']);
 
 };

@@ -6,14 +6,14 @@
 </head>
 <body>
 
+<my-app></my-app>
+
 </body>
 </html>
 
-<!-- bower:js -->
-<script src="bower_components/system.js/dist/system.js"></script>
-<script src="bower_components/angular2-build/angular2.dev.js"></script>
-<!-- endbower -->
-
 <!-- injector:js -->
-<script src="/public/plugins/app/app.js"></script>
 <!-- endinjector -->
+
+<script>
+    System.import('/plugins/app/main');
+</script>
