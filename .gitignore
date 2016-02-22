@@ -1,0 +1,9 @@
+# ide related
+.idea
+
+#npm modules
+node_modules
+
+#bower components
+bower_components
+
