@@ -99,39 +99,37 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'build/client/index.html': [
-                        [
-                            'build/client/jspm_packages/system.js',
-                            'build/client/config.js',
-                            //'build/client/plugins/**/*.js'
-                        ]
+                        'build/client/jspm_packages/system.js',
+                        'build/client/config.js'
                     ]
                 }
-            },
-            systemImport: {
+            }/*,
+            css: {
                 options: {
                     transform: function (filePath) {
                         filePath = filePath.replace('/build/client/', '');
 
-                        return '"'+filePath+'"';
+                        return '<link rel="stylesheet" type="text/css" href=' + filePath + '>';
                     },
-                    starttag: '<!-- injector:systemImport -->',
-                    endtag: '<!-- endinjector -->'
+                    starttag: '<!-- injector:css -->',
+                    endtag: '<!-- endinjector -->',
                 },
                 files: {
-                    'build/client/index.html': [
+                    'tmp/public/index.html': [
                         [
-                            'build/client/jspm_packages/system.js',
-                            'build/client/config.js',
-                            'build/client/plugins/**/*.js'
+
+                            'tmp/public/css/!*.css',
                         ]
                     ]
                 }
-            }
+            }*/
         },
 
         watch: {
-            files: 'client/**/*.ts',
-            tasks: ['typescript']
+            files: [
+                'client/bower_components/*'
+            ],
+            tasks: ['wiredep']
         },
     });
 
@@ -151,6 +149,6 @@ module.exports = function(grunt) {
     //grunt.registerTask('default', ['uglify']);
     grunt.registerTask('server', ['jshint:server', /*'typescript'*/]);
     grunt.registerTask('client', ['jshint:client']);
-    grunt.registerTask('global', ['clean', 'copy', 'injector']);
+    grunt.registerTask('global', ['clean', 'copy', 'wiredep', 'injector', 'watch']);
 
 };
